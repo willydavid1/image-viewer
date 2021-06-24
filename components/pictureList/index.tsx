@@ -16,7 +16,7 @@ interface Pictures {
   page: number
 }
 
-const API_BASE_URL = 'https://api.unsplash.com/photos/'
+const API_BASE_URL = 'https://api.unsplash.com/'
 
 const categories: Category[] = [
   {
@@ -59,14 +59,18 @@ const PictureList = () => {
     })
 
     try {
+      const isDefaultReq = selectedCategory !== 'all'
       const newPage = pictures.page + 1
       const { data } = await axios.get(
-        `${API_BASE_URL}?page=${newPage}&per_page=20&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID_UNPLASH}`
+        isDefaultReq
+          ? `${API_BASE_URL}search/photos?page=${newPage}&per_page=20&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID_UNPLASH}&query=${selectedCategory}`
+          : `${API_BASE_URL}photos/?page=${newPage}&per_page=20&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID_UNPLASH}`
       )
-      console.log(data)
+      const dataWithPics = isDefaultReq ? data.results : [...pictures.data, ...data]
+
       setPictures({
         ...pictures,
-        data: [...pictures.data, ...data],
+        data: dataWithPics,
         isLoading: false,
         page: newPage
       })
@@ -84,6 +88,7 @@ const PictureList = () => {
         }
       })
     } catch (error) {
+      console.log(error)
       storeNotifications.addNotification({
         title: 'Error Loading Images',
         message: '=(',
@@ -107,7 +112,7 @@ const PictureList = () => {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [selectedCategory])
 
   return (
     <div className='flex items-center flex-col'>
@@ -125,6 +130,11 @@ const PictureList = () => {
           <button
             onClick={() => {
               setSelectedCategory(ctg.type)
+              setPictures({
+                ...pictures,
+                page: 0,
+                data: []
+              })
             }}
             key={ctg.type}
             className={`py-2 px-4 flex justify-center items-center capitalize hover:bg-pink-400 hover:text-white ${
@@ -154,7 +164,7 @@ const PictureList = () => {
         pictures.isLoading && <h2 className="text-pink-700 text-xl my-12">Loading...</h2>
       }
 
-      <button onClick={getData} className="my-12 py-3 px-5 bg-pink-500 text-white hover:bg-pink-400">
+      <button onClick={() => getData()} className="my-12 py-3 px-5 bg-pink-500 text-white hover:bg-pink-400">
         Show More
       </button>
     </div>
