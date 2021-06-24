@@ -1,11 +1,7 @@
-import React from 'react'
+import PictureList from 'components/pictureList'
 
 const Home = () => {
-  return (
-    <h1 className="bg-black text-white">
-      =)
-    </h1>
-  )
+  return <PictureList />
 }
 
 export default Home
