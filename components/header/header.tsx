@@ -19,7 +19,7 @@ const Header = (): JSX.Element => {
       <button className="py-2 px-4 flex justify-center items-center hover:bg-pink-400 hover:text-white transition-all">
         BUTTON
       </button>
-      <button className="p-2 flex justify-center items-center border-gray-300 md:border-transparent md:hover:border-gray-300 hover:text-pink-600 border-2 border-transparent rounded-full">
+      <button className="p-2 flex justify-center items-center border-gray-300 md:border-transparent md:hover:border-gray-300 text-pink-600 border-2 border-transparent rounded-full">
         <IoMdSearch className="text-xl cursor-pointer" />
       </button>
     </>
